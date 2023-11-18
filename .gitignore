@@ -1,0 +1,13 @@
+# logs
+logs
+*.log
+npm-debug.log*
+
+# dependency directories
+node_modules/
+
+# dotenv environment variable files
+*.env
+
+# IDE
+.idea

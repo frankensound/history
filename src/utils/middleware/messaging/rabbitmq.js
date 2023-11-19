@@ -22,25 +22,22 @@ async function connectRabbitMQ(retryCount = 5, delay = 3000) {
 
 function isValidMessage(m) {
     try {
-
-        // Attempt to parse the JSON string
+        // Parse the JSON string
         const message = JSON.parse(m);
 
         // Validate the 'username' field (should be a non-empty string)
         if (typeof message.username !== 'string' || message.username.trim().length === 0) {
-            throw new Error("Invalid or missing 'username' field");
+            return false;
         }
 
         // Validate the 'id' field (should be a number and an integer)
         if (typeof message.id !== 'number' || !Number.isInteger(message.id)) {
-            throw new Error("Invalid or missing 'id' field");
+            return false;
         }
 
         // If all validations pass, return true
         return true;
-    } catch (error) {
-        // If any error occurs (either in parsing or validation), return false
-        console.error('Message validation error:', error.message);
+    } catch {
         return false;
     }
 }
@@ -78,10 +75,10 @@ async function consumeMessage(queue, callback) {
     });
 }
 
-async function startListening(queue){
+async function startListening(queue) {
     await consumeMessage(queue, async (content) => {
         messageEmitter.emit('message', content);
     })
 }
 
-module.exports = {consumeMessage, isValidMessage, startListening};
+module.exports = {startListening, isValidMessage};

@@ -1,5 +1,6 @@
 const amqp = require('amqplib');
 const config = require("../../config");
+const messageEmitter = require("../../emitter");
 
 async function connectRabbitMQ(retryCount = 5, delay = 3000) {
     for (let i = 0; i < retryCount; i++) {
@@ -77,4 +78,10 @@ async function consumeMessage(queue, callback) {
     });
 }
 
-module.exports = {consumeMessage, isValidMessage};
+async function startListening(queue){
+    await consumeMessage(queue, async (content) => {
+        messageEmitter.emit('message', content);
+    })
+}
+
+module.exports = {consumeMessage, isValidMessage, startListening};

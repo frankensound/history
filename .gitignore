@@ -11,3 +11,6 @@ node_modules/
 
 # IDE
 .idea
+
+# tests coverage output
+coverage

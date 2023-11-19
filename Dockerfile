@@ -1,5 +1,5 @@
 # Build
-FROM node:14 AS builder
+FROM node:20.9.0-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -10,7 +10,7 @@ RUN npm install
 COPY . .
 
 # Run
-FROM node:14-slim
+FROM node:20.9.0-alpine
 
 WORKDIR /usr/src/app
 

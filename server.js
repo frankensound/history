@@ -1,5 +1,5 @@
 const express = require('express');
-require('dotenv').config();
+const config = require("./src/utils/config");
 const { startListening } = require('./src/controllers/history/controller');
 const metricsController = require('./src/controllers/metrics/controller');
 
@@ -12,6 +12,6 @@ app.get('/metrics', metricsController.getMetrics);
 startListening();
 
 // Start the server
-app.listen(process.env.PORT, () => {
-    console.log(`Server listening at http://localhost:${process.env.PORT}`);
+app.listen(config.PORT, config.HOST, () => {
+    console.log(`Server listening at http://${config.HOST}:${config.PORT}`);
 });

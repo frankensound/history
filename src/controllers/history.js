@@ -1,11 +1,11 @@
 const historyService = require('../services/history');
-const messageEmitter = require("../utils/event-emitter");
+const messageEmitter = require("../utils/emitter");
 
 // Handle 'message' event for inserting records
 messageEmitter.on('message', (content) => {
     historyService.insertListeningHistory(content.username, content.id);
 });
-
+ *
 // Handle 'deleteUser' event for deleting user records
 messageEmitter.on('deleteUser', (username) => {
     historyService.deleteUserRecords(username);

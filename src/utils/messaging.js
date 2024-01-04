@@ -1,5 +1,5 @@
 const amqp = require('amqplib');
-const messageEmitter = require("./event-emitter");
+const messageEmitter = require("./emitter");
 
 async function connectRabbitMQ(retryCount = 5, delay = 3000) {
     for (let i = 0; i < retryCount; i++) {
@@ -75,4 +75,4 @@ async function startListeningForDeletion(queue) {
     await consumeMessage(queue, "deletion");
 }
 
-module.exports = {startListeningForInsertingRecord, startListeningForDeletion};
+module.exports = {startListeningForInsertingRecord, startListeningForDeletion, isValidMessage};

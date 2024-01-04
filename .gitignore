@@ -1,16 +1,14 @@
-# logs
+# Logs
 logs
-*.log
-npm-debug.log*
 
-# dependency directories
-node_modules/
+# Dependency directories
+**/node_modules/
 
-# dotenv environment variable files
+# Environment variable files
 *.env
 
 # IDE
-.idea
+**/.idea
 
-# tests coverage output
-coverage
+# Test coverage output
+**/coverage

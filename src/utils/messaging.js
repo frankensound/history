@@ -24,7 +24,7 @@ function isValidMessage(message, messageType) {
         // Parse the JSON string
         const m = JSON.parse(message);
         // Validate the 'userId' field (should be a non-empty string)
-        if (typeof m.userId !== 'number' || !Number.isInteger(m.userId)) {
+        if (typeof m.userId !== 'string' || m.userId.trim().length === 0) {
             return false;
         }
         if (messageType === "history") {

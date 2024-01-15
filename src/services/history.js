@@ -1,10 +1,10 @@
 const { influxDB, org, bucket, API } = require('../utils/database');
 const { Point } = require('@influxdata/influxdb-client');
 
-async function insertListeningHistory(username, songId) {
+async function insertListeningHistory(userId, songId) {
     const writeApi = influxDB.getWriteApi(org, bucket);
     const point = new Point('listening_history')
-        .tag('username', username)
+        .tag('user_id', userId)
         .intField('song_id', songId)
         .timestamp(new Date());
 
@@ -12,12 +12,12 @@ async function insertListeningHistory(username, songId) {
     await writeApi.close();
 }
 
-async function fetchLatestEntries(username) {
+async function fetchLatestEntries(userId) {
     const queryApi = influxDB.getQueryApi(org);
     const query = `from(bucket: "${bucket}")
         |> range(start: -30d)
         |> filter(fn: (r) => r["_measurement"] == "listening_history")
-        |> filter(fn: (r) => r["username"] == "${username}")
+        |> filter(fn: (r) => r["user_id"] == "${userId}")
         |> limit(n:10)
         |> sort(desc: true)`;
     try {
@@ -30,12 +30,12 @@ async function fetchLatestEntries(username) {
     }
 }
 
-async function deleteUserRecords(username) {
+async function deleteUserRecords(userId) {
     const deleteAPI = new API(influxDB);
     const start = new Date('1970-01-01T00:00:00Z'); // Unix epoch start
     const stop = new Date(); // Current time
 
-    const predicate = `_measurement="listening_history" AND username="${username}"`;
+    const predicate = `_measurement="listening_history" AND user_id="${userId}"`;
     await deleteAPI.postDelete({
         org,
         bucket,

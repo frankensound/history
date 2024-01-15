@@ -3,19 +3,23 @@ const messageEmitter = require("../utils/emitter");
 
 // Handle 'message' event for inserting records
 messageEmitter.on('message', (content) => {
-    historyService.insertListeningHistory(content.username, content.id);
+    historyService.insertListeningHistory(content.userId, content.songId);
 });
- *
+ 
 // Handle 'deleteUser' event for deleting user records
-messageEmitter.on('deleteUser', (username) => {
-    historyService.deleteUserRecords(username);
+messageEmitter.on('deleteUser', (userId) => {
+    historyService.deleteUserRecords(userId);
 });
 
 async function getLatestEntries(req, res) {
     try {
-        const username = req.params.username;
-        const entries = await historyService.fetchLatestEntries(username);
-        res.json(entries);
+        const userId = req.headers['UserID'];
+        if (userId) {
+            const entries = await historyService.fetchLatestEntries(userId);
+            res.json(entries);
+        } else {
+            res.status(400).send("You don't seem to be logged in!");
+        }
     } catch (err) {
         res.status(500).send("Error fetching history");
     }

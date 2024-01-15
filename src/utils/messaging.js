@@ -23,13 +23,13 @@ function isValidMessage(message, messageType) {
     try {
         // Parse the JSON string
         const m = JSON.parse(message);
-        // Validate the 'username' field (should be a non-empty string)
-        if (typeof m.username !== 'string' || m.username.trim().length === 0) {
+        // Validate the 'userId' field (should be a non-empty string)
+        if (typeof m.userId !== 'number' || !Number.isInteger(m.userId)) {
             return false;
         }
         if (messageType === "history") {
-            // Validate the 'id' field (should be a number and an integer)
-            if (typeof m.id !== 'number' || !Number.isInteger(m.id)) {
+            // Validate the 'songId' field (should be a number and an integer)
+            if (typeof m.songId !== 'number' || !Number.isInteger(m.songId)) {
                 return false;
             }
         }
@@ -56,7 +56,7 @@ async function consumeMessage(queue, context) {
                 if (context === "history") {
                     messageEmitter.emit('message', parsedContent);
                 } else if (context === "deletion") {
-                    messageEmitter.emit('deleteUser', parsedContent.username);
+                    messageEmitter.emit('deleteUser', parsedContent.userId);
                 }
             } else {
                 console.error('Invalid message format:', content);
@@ -67,6 +67,15 @@ async function consumeMessage(queue, context) {
     });
 }
 
+async function publishMessage(queue, messageObj, options = {}) {
+    const channel = await connectRabbitMQ();
+    await channel.assertQueue(queue, { durable: true });
+
+    const message = JSON.stringify(messageObj);
+    channel.sendToQueue(queue, Buffer.from(message), options);
+    console.log(`Message sent to ${queue}: ${message}`);
+}
+
 async function startListeningForInsertingRecord(queue) {
     await consumeMessage(queue, "history");
 }
@@ -75,4 +84,4 @@ async function startListeningForDeletion(queue) {
     await consumeMessage(queue, "deletion");
 }
 
-module.exports = {startListeningForInsertingRecord, startListeningForDeletion, isValidMessage};
+module.exports = {startListeningForInsertingRecord, startListeningForDeletion, isValidMessage, publishMessage};

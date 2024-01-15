@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: history
+  labels:
+    app: history
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: history
+  template:
+    metadata:
+      labels:
+        app: history
+    spec:
+      containers:
+        - name: history
+          image: marinastancu/history:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "development"
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "3000"
+            - name: RABBITMQ_URL
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq
+                  key: URL
+            - name: HISTORY_QUEUE
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq
+                  key: HISTORY_QUEUE
+            - name: USER_QUEUE
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq
+                  key: USER_QUEUE
+            - name: INFLUXDB_ORG
+              valueFrom:
+                secretKeyRef:
+                  name: historydb
+                  key: ORG
+            - name: INFLUXDB_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: historydb
+                  key: BUCKET
+            - name: INFLUXDB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: historydb
+                  key: URL
+            - name: INFLUXDB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: historydb
+                  key: TOKEN
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: songs-service
+spec:
+  selector:
+    app: songs
+  ports:
+    - protocol: TCP
+      port: 8080

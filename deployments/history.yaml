@@ -17,6 +17,7 @@ spec:
       containers:
         - name: history
           image: marinastancu/history:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           env:

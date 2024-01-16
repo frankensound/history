@@ -29,11 +29,12 @@ process.on('unhandledRejection', (reason, promise) => {
 // Record response-time metrics
 function responseTimeMiddleware(req, res, next) {
     const start = process.hrtime();
+    const serviceLabel = 'history';
 
     res.on('finish', () => {
         const durationInMilliseconds = getDurationInMilliseconds(start);
         const routePath = req.route && req.route.path ? req.route.path : 'unknown';
-        responseTimes.observe({ route: routePath }, durationInMilliseconds);
+        responseTimes.observe({ route: routePath, service: serviceLabel  }, durationInMilliseconds);
     });
 
     next();

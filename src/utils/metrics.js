@@ -3,7 +3,6 @@ const client = require('prom-client');
 // Create a Registry to register the metrics
 const register = new client.Registry();
 
-// Add a default label which is added to all metrics
 register.setDefaultLabels({
     app: 'history'
 });
@@ -16,7 +15,7 @@ const responseTimes = new client.Histogram({
     name: 'request_duration_milliseconds',
     help: 'Response times in milliseconds',
     buckets: [0.1, 1, 5, 10, 25, 50, 100, 200, 500],
-    labelNames: ['route'],
+    labelNames: ['route', 'service'],
     registers: [register],
 });
 

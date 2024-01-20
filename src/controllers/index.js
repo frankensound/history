@@ -1,7 +1,7 @@
 const historyController = require('./history');
 
 function initializeControllers(app) {
-    app.get('/history/:userId', historyController.getLatestEntries);
+    app.get('/history', historyController.getLatestEntries);
 }
 
 module.exports = { initializeControllers };

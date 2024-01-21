@@ -37,11 +37,16 @@ spec:
                 secretKeyRef:
                   name: rabbitmq
                   key: HISTORY_QUEUE
-            - name: USER_QUEUE
+            - name: DELETION_QUEUE
               valueFrom:
                 secretKeyRef:
                   name: rabbitmq
-                  key: USER_QUEUE
+                  key: DELETION_QUEUE
+            - name: EVENTS_QUEUE
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq
+                  key: EVENTS_QUEUE
             - name: INFLUXDB_ORG
               valueFrom:
                 secretKeyRef:
